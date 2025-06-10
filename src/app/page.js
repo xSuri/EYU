@@ -1,8 +1,11 @@
 'use client';
 import { useState } from 'react';
 import StartScreen from './components/start';
-import Earth from './components/earth';
 import { PermissionProvider } from './PermissionContext';
+import { Provider } from 'react-redux';
+import store from './store';
+import CommandBar from './utils/Commands';
+import Main from './components/main';
 
 export default function Home() {
   const [started, setStarted] = useState(false);
@@ -18,12 +21,15 @@ export default function Home() {
   };
 
   return (
-    <PermissionProvider>
-      {
-        !started ? (
-          <StartScreen onStart={startGame} />
-        ) : (<Earth />)
-      }
-    </PermissionProvider>
+    <Provider store={store}>
+      <PermissionProvider>
+        {
+          !started ? (
+            <StartScreen onStart={startGame} />
+          ) : (<Main />)
+        }
+      </PermissionProvider>
+      <CommandBar />
+    </Provider>
   );
 }

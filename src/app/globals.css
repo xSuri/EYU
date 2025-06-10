@@ -24,3 +24,56 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.inactive-house:hover {
+  filter: brightness(0.6) drop-shadow(0 0 10px #ffd700) !important;
+  transition: filter 0.2s !important;
+}
+
+.shop {
+  cursor: pointer;
+}
+
+.bank {
+  cursor: pointer;
+}
+
+.shop:hover {
+  filter: brightness(0.8) drop-shadow(0 0 10px #ffd700) !important;
+  transition: filter 0.2s !important;
+}
+
+.bank:hover {
+  filter: brightness(0.8) drop-shadow(0 0 10px #ffd700) !important;
+  transition: filter 0.2s !important;
+}
+
+.shop:hover {
+  cursor: pointer;
+  transition: transform 0.5s, filter 0.5s;
+}
+
+.shop:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.bank:hover {
+  cursor: pointer;
+  transition: transform 0.5s, filter 0.5s;
+}
+
+.bank:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+img {
+  -webkit-user-drag: none;
+}
+
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  font-family: "'Press Start 2P', 'VT323', monospace";
+}
