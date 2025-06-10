@@ -21,7 +21,7 @@ export default function StartScreen({ onStart }) {
 
     const handleCredit = () => {
         setShowCredit(true);
-        setShowStart(false);
+        setShowStart(true);
     };
 
     const setSoundStatus = (mute) => {
@@ -42,7 +42,7 @@ export default function StartScreen({ onStart }) {
                     <div
                         className="w-screen h-screen bg-black flex items-center justify-center relative overflow-hidden"
                         style={{
-                            backgroundImage: 'url(/images/earth/background.gif)',
+                            backgroundImage: 'url(/images/utils/background.gif)',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                         }}
@@ -54,47 +54,46 @@ export default function StartScreen({ onStart }) {
                         <div className="z-10 text-center text-white font-mono">
 
                             {
-                                showCredit ? (<Credit />) : null
-                            }
+                                showCredit ? (<Credit  open={showCredit} onClose={setShowCredit}/>) : (
+                                    showStart ? (
+                                        <div className="flex flex-col gap-4 items-center" >
+                                            <div className="relative">
+                                                <InteractiveButton src="/images/utils/button_start.png" onClick={handleStart} />
 
-                            {
-                                showStart ? (
-                                    <div className="flex flex-col gap-4 items-center">
-                                        <div className="relative">
-                                            <InteractiveButton src="/images/earth/button_start.png" onClick={handleStart} />
-
-                                            <div className="absolute top-0 right-[-3rem]">
-                                                {muteSounds ? (
-                                                    <InteractiveButton
-                                                        src="/images/earth/button_off.png"
-                                                        onClick={() => setSoundStatus(false)}
-                                                        styleWidthHeight="w-12 h-12"
-                                                    />
-                                                ) : (
-                                                    <InteractiveButton
-                                                        src="/images/earth/button_on.png"
-                                                        onClick={() => setSoundStatus(true)}
-                                                        styleWidthHeight="w-12 h-12"
-                                                    />
-                                                )}
+                                                <div className="absolute top-0 right-[-3rem]">
+                                                    {muteSounds ? (
+                                                        <InteractiveButton
+                                                            src="/images/utils/button_off.png"
+                                                            onClick={() => setSoundStatus(false)}
+                                                            styleWidthHeight="w-12 h-12"
+                                                        />
+                                                    ) : (
+                                                        <InteractiveButton
+                                                            src="/images/utils/button_on.png"
+                                                            onClick={() => setSoundStatus(true)}
+                                                            styleWidthHeight="w-12 h-12"
+                                                        />
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <InteractiveButton
-                                            src="/images/earth/button_credit.png"
-                                            onClick={handleCredit}
-                                        />
-                                    </div>
-                                ) :
-                                    showCredit ? null : ((
-                                        <p className="mt-10 text-gray-300 animate-pulse text-lg flex flex-col items-center gap-2">
-                                            Ładowanie...
-                                            <Image src="/images/utils/dolar.gif" width={50} height={50} alt="Loading icon" />
-                                        </p>
-                                    ))
+                                            <InteractiveButton
+                                                src="/images/utils/button_credit.png"
+                                                onClick={handleCredit}
+                                            />
+                                        </div>
+                                    ) :
+                                        showCredit ? null : ((
+                                            <p className="mt-10 text-gray-300 animate-pulse text-lg flex flex-col items-center gap-2">
+                                                Loading...
+                                                <Image src="/images/utils/dolar.gif" width={50} height={50} alt="Loading icon" />
+                                            </p>
+                                        ))
+
+                                )
                             }
                         </div>
-                    </div>
+                    </div >
                 )
             }
         </>
