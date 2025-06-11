@@ -5,9 +5,11 @@ import { useState, useEffect } from 'react';
 import End from './end';
 import BottomMenu from '../utils/BottomMenu';
 import PixelModal from '../utils/PixelModal';
-import BackgroundMusic from '../utils/Music';
+import BackgroundMusic, { ChangeMusicMute } from '../utils/Music';
+import InteractiveButton from '../utils/Interactive-Button';
 
 export default function Main() {
+    const [muteSounds, setMuteSounds] = useState(false);
     const [gameEnded, setGameEnded] = useState(false);
     const [openShopModal, setOpenShopModal] = useState(false);
 
@@ -19,9 +21,14 @@ export default function Main() {
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
+    const setSoundStatus = (mute) => {
+        setMuteSounds(mute);
+        ChangeMusicMute();
+    }
+
     const handleHouseClick = (houseName, amount) => {
         dispatch(buyBuilding({ houseName, amount }));
-        if( user.cash >= amount) setAudio({ soundSrc: '/sounds/buy_building.wav', clickedButton: true });
+        if (user.cash >= amount) setAudio({ soundSrc: '/sounds/buy_building.wav', clickedButton: true });
     };
 
     const handleOpenShopModal = () => {
@@ -206,6 +213,30 @@ export default function Main() {
                     )}
 
                     <BackgroundMusic src="/sounds/main_playing_music.wav" volume={0.02} />
+
+                    <div className="relative">
+                        <InteractiveButton src="/images/utils/button_start.png" sound={true} soundSrc='/sounds/click_button.ogg' onClick={handleStart} />
+
+                        <div className="absolute top-0 left-[-3rem]">
+                            {muteSounds ? (
+                                <InteractiveButton
+                                    src="/images/utils/button_off.png"
+                                    onClick={() => setSoundStatus(false)}
+                                    styleWidthHeight="w-12 h-12"
+                                    sound={true}
+                                    soundSrc='/sounds/click_button.ogg'
+                                />
+                            ) : (
+                                <InteractiveButton
+                                    src="/images/utils/button_on.png"
+                                    onClick={() => setSoundStatus(true)}
+                                    styleWidthHeight="w-12 h-12"
+                                    sound={true}
+                                    soundSrc='/sounds/click_button.ogg'
+                                />
+                            )}
+                        </div>
+                    </div>
                 </div>
 
             )}
