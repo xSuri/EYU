@@ -25,8 +25,7 @@ const planetUpgradePrices = [500000, 5000000];
 const planetNames = ["earth", "moon", "mars"];
 const planetDisplayNames = ["Earth", "Moon", "Mars"];
 
-export default function PixelUpgradeModal({ open, onClose }) {
-    const [gameEnded, setGameEnded] = useState(false);
+export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnded }) {
     const upgrades = useSelector((state) => state.user.upgrades);
     const boughtBuildings = useSelector((state) => state.user.bought.buildings);
     const cash = useSelector((state) => state.user.cash);

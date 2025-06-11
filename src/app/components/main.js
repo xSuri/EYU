@@ -7,7 +7,7 @@ import BottomMenu from '../utils/BottomMenu';
 import PixelModal from '../utils/PixelModal';
 
 export default function Main() {
-    const [gameEnded, setGameEnded] = useState(true);
+    const [gameEnded, setGameEnded] = useState(false);
     const [openShopModal, setOpenShopModal] = useState(false);
 
     const closeShopModal = () => setOpenShopModal(false);
@@ -174,7 +174,7 @@ export default function Main() {
                     </>
 
                     <BottomMenu />
-                    <PixelModal onClose={() => closeShopModal()} open={openShopModal} title="Sklep" >
+                    <PixelModal onClose={() => closeShopModal()} open={openShopModal} title="Sklep" gameEnded={gameEnded} setGameEnded={setGameEnded}>
                     </PixelModal>
                 </div>
 
