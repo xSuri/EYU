@@ -55,6 +55,26 @@ export default function Main() {
 
     return (
         <>
+            <div className="fixed top-4 left-4 z-[999]">
+                {muteSounds ? (
+                    <InteractiveButton
+                        src="/images/utils/button_off.png"
+                        onClick={() => setSoundStatus(false)}
+                        styleWidthHeight="w-12 h-12"
+                        sound={true}
+                        soundSrc='/sounds/click_button.ogg'
+                    />
+                ) : (
+                    <InteractiveButton
+                        src="/images/utils/button_on.png"
+                        onClick={() => setSoundStatus(true)}
+                        styleWidthHeight="w-12 h-12"
+                        sound={true}
+                        soundSrc='/sounds/click_button.ogg'
+                    />
+                )}
+            </div>
+
             {gameEnded ? (<End />) : (
 
                 <div
@@ -70,6 +90,7 @@ export default function Main() {
                             position: 'absolute',
                             top: 0,
                             left: 0,
+                            zIndex: 1,
                             width: '100%',
                             height: '100%',
                             backgroundImage: `url(/images/${user.level}/1920x1080.png)`,
@@ -77,7 +98,7 @@ export default function Main() {
                             backgroundPosition: 'center',
                             backgroundRepeat: 'no-repeat',
                         }}
-                    ></div>
+                    />
 
                     {
                         Object.keys(houses).map((house, index) => (
@@ -213,30 +234,6 @@ export default function Main() {
                     )}
 
                     <BackgroundMusic src="/sounds/main_playing_music.wav" volume={0.02} />
-
-                    <div className="relative">
-                        <InteractiveButton src="/images/utils/button_start.png" sound={true} soundSrc='/sounds/click_button.ogg' onClick={handleStart} />
-
-                        <div className="absolute top-0 left-[-3rem]">
-                            {muteSounds ? (
-                                <InteractiveButton
-                                    src="/images/utils/button_off.png"
-                                    onClick={() => setSoundStatus(false)}
-                                    styleWidthHeight="w-12 h-12"
-                                    sound={true}
-                                    soundSrc='/sounds/click_button.ogg'
-                                />
-                            ) : (
-                                <InteractiveButton
-                                    src="/images/utils/button_on.png"
-                                    onClick={() => setSoundStatus(true)}
-                                    styleWidthHeight="w-12 h-12"
-                                    sound={true}
-                                    soundSrc='/sounds/click_button.ogg'
-                                />
-                            )}
-                        </div>
-                    </div>
                 </div>
 
             )}
