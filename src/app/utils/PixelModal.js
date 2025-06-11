@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { buyUpgrade, buyBuildingUpgrade, changeCash, changeLevel } from "../store/index";
 
@@ -26,12 +26,19 @@ const planetNames = ["earth", "moon", "mars"];
 const planetDisplayNames = ["Earth", "Moon", "Mars"];
 
 export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnded }) {
+    const audioRef = useRef();
+
     const upgrades = useSelector((state) => state.user.upgrades);
     const boughtBuildings = useSelector((state) => state.user.bought.buildings);
     const cash = useSelector((state) => state.user.cash);
     const cashPerSecondMultiplier = useSelector((state) => state.user.cashPerSecondMultiplier);
     const levelNumber = useSelector((state) => state.user.levelNumber);
     const dispatch = useDispatch();
+
+    const [audio, setAudio] = useState({
+        soundSrc: '',
+        clickedButton: false,
+    });
 
     if (!open) return null;
 
@@ -43,6 +50,38 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
     const isOnMars = planetNames[levelNumber] === "mars";
     const endGamePrice = 10_000_000;
     const canEndGame = cash >= endGamePrice;
+
+    const handleBuyUpgrade = ({ key, lvl, price }) => {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            audioRef.current.play();
+        }
+        else {
+            setAudio({ soundSrc: '/sounds/buy_upgrade.wav', clickedButton: true });
+        };
+        dispatch(changeCash(-price));
+        dispatch(buyUpgrade({ type: key, level: lvl }));
+    };
+
+    const handleBuyBuildingUpgrade = (house, nextLevel, price) => {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            audioRef.current.play();
+        }
+        else {
+            setAudio({ soundSrc: '/sounds/buy_building.wav', clickedButton: true });
+        };
+        dispatch(changeCash(-price));
+        dispatch(buyBuildingUpgrade({ house, nextLevel }));
+    };
+
+    const handleBuyNextPlanet = (nextPlanetPrice) => {
+        dispatch(changeCash(-nextPlanetPrice));
+        dispatch(changeLevel(nextLevelNumber));
+        setAudio({ soundSrc: '/sounds/buy_planet.wav', clickedButton: true });
+    };
 
     return (
         <div style={{
@@ -159,10 +198,7 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                                         <div key={lvl} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                                             <button
                                                 disabled={!canBuy}
-                                                onClick={() => {
-                                                    dispatch(changeCash(-price));
-                                                    dispatch(buyUpgrade({ type: key, level: lvl }));
-                                                }}
+                                                onClick={() => handleBuyUpgrade({ key, lvl, price })}
                                                 style={{
                                                     width: 46,
                                                     height: 46,
@@ -261,10 +297,7 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                                     }}
                                 >
                                     <button
-                                        onClick={() => {
-                                            dispatch(changeCash(-price));
-                                            dispatch(buyBuildingUpgrade({ house, nextLevel }));
-                                        }}
+                                        onClick={() => handleBuyBuildingUpgrade(house, nextLevel, price)}
                                         disabled={!canAfford || isMax || !isBought}
                                         style={{
                                             background: "transparent",
@@ -322,10 +355,7 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                         <React.Fragment>
                             <button
                                 disabled={cash < nextPlanetPrice}
-                                onClick={() => {
-                                    dispatch(changeCash(-nextPlanetPrice));
-                                    dispatch(changeLevel(nextLevelNumber));
-                                }}
+                                onClick={() => handleBuyNextPlanet(nextPlanetPrice)}
                                 style={{
                                     background: cash >= nextPlanetPrice ? "#7ab179" : "#bdbdbd",
                                     color: "#222",
@@ -357,7 +387,10 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                         <React.Fragment>
                             <button
                                 disabled={!canEndGame}
-                                onClick={() => setGameEnded(true)}
+                                onClick={() => {
+                                    setGameEnded(true);
+                                    setAudio({ soundSrc: '/sounds/end_game.wav', clickedButton: true });
+                                }}
                                 style={{
                                     background: canEndGame ? "#ec6262" : "#bdbdbd",
                                     color: "#fff",
@@ -387,6 +420,16 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                     )}
                 </div>
             </div>
+
+            {audio.clickedButton && audio.soundSrc && (
+                <audio
+                    ref={audioRef}
+                    src={audio.soundSrc}
+                    autoPlay
+                    volume={1}
+                    onEnded={() => setAudio({ soundSrc: '', clickedButton: false })}
+                />
+            )}
         </div>
     );
 }

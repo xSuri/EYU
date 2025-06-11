@@ -14,14 +14,24 @@ export default function StartScreen({ onStart }) {
     const [showStart, setShowStart] = useState(true);
     const [showCredit, setShowCredit] = useState(false);
 
+    const [audio, setAudio] = useState({
+        soundSrc: '',
+        clickedButton: false,
+    });
+
     const handleStart = () => {
         setShowStart(false);
         onStart();
     };
 
-    const handleCredit = () => {
+    const handleShowCredit = () => {
         setShowCredit(true);
         setShowStart(true);
+    };
+
+    const handleHideCredit = () => {
+        setShowCredit(false);
+        setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
     };
 
     const setSoundStatus = (mute) => {
@@ -47,18 +57,18 @@ export default function StartScreen({ onStart }) {
                             backgroundPosition: 'center',
                         }}
                     >
-                        <BackgroundMusic src="/music/earth/music.wav" />
+                        <BackgroundMusic src="/sounds/main_menu_music.wav" volume={0.05} />
 
                         <div className="absolute inset-0 bg-gray-900 opacity-50" />
 
                         <div className="z-10 text-center text-white font-mono">
 
                             {
-                                showCredit ? (<Credit  open={showCredit} onClose={setShowCredit}/>) : (
+                                showCredit ? (<Credit open={showCredit} onClose={handleHideCredit} />) : (
                                     showStart ? (
                                         <div className="flex flex-col gap-4 items-center" >
                                             <div className="relative">
-                                                <InteractiveButton src="/images/utils/button_start.png" onClick={handleStart} />
+                                                <InteractiveButton src="/images/utils/button_start.png" sound={true} soundSrc='/sounds/click_button.ogg' onClick={handleStart} />
 
                                                 <div className="absolute top-0 right-[-3rem]">
                                                     {muteSounds ? (
@@ -66,12 +76,16 @@ export default function StartScreen({ onStart }) {
                                                             src="/images/utils/button_off.png"
                                                             onClick={() => setSoundStatus(false)}
                                                             styleWidthHeight="w-12 h-12"
+                                                            sound={true}
+                                                            soundSrc='/sounds/click_button.ogg'
                                                         />
                                                     ) : (
                                                         <InteractiveButton
                                                             src="/images/utils/button_on.png"
                                                             onClick={() => setSoundStatus(true)}
                                                             styleWidthHeight="w-12 h-12"
+                                                            sound={true}
+                                                            soundSrc='/sounds/click_button.ogg'
                                                         />
                                                     )}
                                                 </div>
@@ -79,7 +93,9 @@ export default function StartScreen({ onStart }) {
 
                                             <InteractiveButton
                                                 src="/images/utils/button_credit.png"
-                                                onClick={handleCredit}
+                                                onClick={handleShowCredit}
+                                                sound={true}
+                                                soundSrc='/sounds/click_button.ogg'
                                             />
                                         </div>
                                     ) :
@@ -93,6 +109,15 @@ export default function StartScreen({ onStart }) {
                                 )
                             }
                         </div>
+
+                        {audio.clickedButton && audio.soundSrc && (
+                            <audio
+                                src={audio.soundSrc}
+                                autoPlay
+                                volume={1}
+                                onEnded={() => setAudio({ soundSrc: '', clickedButton: false })}
+                            />
+                        )}
                     </div >
                 )
             }

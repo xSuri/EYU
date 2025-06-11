@@ -5,18 +5,38 @@ import { useState, useEffect } from 'react';
 import End from './end';
 import BottomMenu from '../utils/BottomMenu';
 import PixelModal from '../utils/PixelModal';
+import BackgroundMusic from '../utils/Music';
 
 export default function Main() {
     const [gameEnded, setGameEnded] = useState(false);
     const [openShopModal, setOpenShopModal] = useState(false);
 
-    const closeShopModal = () => setOpenShopModal(false);
+    const [audio, setAudio] = useState({
+        soundSrc: '',
+        clickedButton: false,
+    });
 
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     const handleHouseClick = (houseName, amount) => {
         dispatch(buyBuilding({ houseName, amount }));
+        if( user.cash >= amount) setAudio({ soundSrc: '/sounds/buy_building.wav', clickedButton: true });
+    };
+
+    const handleOpenShopModal = () => {
+        setOpenShopModal(true);
+        setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
+    }
+
+    const handleCloseShopModal = () => {
+        setOpenShopModal(false);
+        setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
+    }
+
+    const handleBankClick = () => {
+        dispatch(click());
+        setAudio({ soundSrc: '/sounds/get_money.wav', clickedButton: true });
     };
 
     const houses = user.bought.buildings;
@@ -142,7 +162,7 @@ export default function Main() {
                                         cursor: 'pointer',
                                         zIndex: 1,
                                     }}
-                                    onClick={() => dispatch(click())}
+                                    onClick={handleBankClick}
                                 />
                             </div>
 
@@ -167,15 +187,25 @@ export default function Main() {
                                         cursor: 'pointer',
                                         zIndex: 1,
                                     }}
-                                    onClick={() => setOpenShopModal(true)}
+                                    onClick={handleOpenShopModal}
                                 />
                             </div>
                         </div>
                     </>
 
                     <BottomMenu />
-                    <PixelModal onClose={() => closeShopModal()} open={openShopModal} title="Sklep" gameEnded={gameEnded} setGameEnded={setGameEnded}>
-                    </PixelModal>
+                    <PixelModal onClose={handleCloseShopModal} open={openShopModal} title="Sklep" gameEnded={gameEnded} setGameEnded={setGameEnded} />
+
+                    {audio.clickedButton && audio.soundSrc && (
+                        <audio
+                            src={audio.soundSrc}
+                            autoPlay
+                            volume={1}
+                            onEnded={() => setAudio({ soundSrc: '', clickedButton: false })}
+                        />
+                    )}
+
+                    <BackgroundMusic src="/sounds/main_playing_music.wav" volume={0.02} />
                 </div>
 
             )}
