@@ -49,8 +49,8 @@ const initialState = {
 
 const levelNames = ['earth', 'moon', 'mars'];
 
-const cashPerClickBonuses = [1, 3, 7];
-const cashPerSecondMultipliers = [2, 3, 5];
+const cashPerClickBonuses = [3, 50, 100];
+const cashPerSecondMultipliers = [1.3, 1.5, 2];
 const buildingBasePerSecond = 100;
 const levelOrder = ['first', 'second', 'third'];
 

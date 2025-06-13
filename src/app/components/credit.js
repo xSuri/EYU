@@ -60,16 +60,16 @@ export default function Credit({ open, onClose }) {
         <div style={labelStyle}>CREDITS</div>
         <div style={{ marginBottom: 22 }}>
           <span style={{ color: "#e9e968" }}>Project Management</span><br />
-          Hubert 'xsuri' Kucharzak
+          Hubert &apos;xsuri&apos; Kucharzak
           <br />
         </div>
         <div style={{ marginBottom: 22 }}>
           <span style={{ color: "#e9e968" }}>Programming</span><br />
-          Hubert 'xsuri' Kucharzak
+          Hubert &apos;xsuri&apos; Kucharzak
         </div>
         <div style={{ marginBottom: 22 }}>
           <span style={{ color: "#e9e968" }}>Game Design</span><br />
-          Hubert 'xsuri' Kucharzak
+          Hubert &apos;xsuri&apos; Kucharzak
           <br />
           Dawid Potykanowicz
           <br />

@@ -13,13 +13,13 @@ export default function BackgroundMusic({ src, timeout, volume = 0.1 }) {
         if(perms){
             setTimeout(() => audioRef.current.play(), timeout || 500);
         };
-    }, [perms]);
+    }, [perms, timeout]);
 
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = volume;
         }
-    }, []);
+    }, [volume]);
 
     return (
         <audio ref={audioRef}  loop>

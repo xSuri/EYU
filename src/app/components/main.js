@@ -7,6 +7,7 @@ import BottomMenu from '../utils/BottomMenu';
 import PixelModal from '../utils/PixelModal';
 import BackgroundMusic, { ChangeMusicMute } from '../utils/Music';
 import InteractiveButton from '../utils/Interactive-Button';
+import Image from 'next/image';
 
 export default function Main() {
     const [muteSounds, setMuteSounds] = useState(false);
@@ -51,7 +52,7 @@ export default function Main() {
     useEffect(() => {
         const moneyPerSec = setInterval(() => dispatch(addMoneyPerSecond()), 1000);
         return () => clearInterval(moneyPerSec);
-    }, [user.cashPerSecond]);
+    }, [user.cashPerSecond, dispatch]);
 
     return (
         <>
@@ -90,7 +91,6 @@ export default function Main() {
                             position: 'absolute',
                             top: 0,
                             left: 0,
-                            zIndex: 1,
                             width: '100%',
                             height: '100%',
                             backgroundImage: `url(/images/${user.level}/1920x1080.png)`,
@@ -112,8 +112,8 @@ export default function Main() {
                                         : (Math.floor((index - 6) / 2) * 700 + ((index % 2 === 0) ? 150 : 350) + (index >= 8 ? 700 : 0)) - 50
                                     ) / 1920 * 100
                                         }%`,
-                                    width: `${128 / 1920 * 100}%`,
-                                    height: `${256 / 1080 * 100}%`,
+                                    width: `${144 / 1920 * 100}%`,
+                                    height: `${288 / 1080 * 100}%`,
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
@@ -134,11 +134,11 @@ export default function Main() {
                                                 pointerEvents: 'none',
                                             }}
                                         >
-                                            {`${(index + 1) * 200}$`}
+                                            {`${((index + 1) * 400) * 2.5}$`}
                                         </span>
                                     )
                                 }
-                                <img
+                                <Image
                                     src={`/images/${user.level}/domeklvl${user.upgrades.building_upgrades[house].level}.png`}
                                     alt={'House ' + (index + 1)}
                                     className={houses[house] ? '' : 'inactive-house'}
@@ -150,7 +150,9 @@ export default function Main() {
                                         zIndex: 1,
                                         filter: houses[house] ? 'brightness(1)' : 'brightness(0.4)',
                                     }}
-                                    onClick={() => houses[house] ? null : handleHouseClick(house, (index + 1) * 200)}
+                                    width={144}
+                                    height={288}
+                                    onClick={() => houses[house] ? null : handleHouseClick(house, ((index + 1) * 400) * 2.5)}
                                 />
                             </div>
                         ))
@@ -171,15 +173,15 @@ export default function Main() {
                         >
                             <div
                                 style={{
-                                    width: `${192 / 1920 * 100}vw`,
-                                    height: `${320 / 1080 * 100}vh`,
+                                    width: `${240 / 1920 * 100}vw`,
+                                    height: `${400 / 1080 * 100}vh`,
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     overflow: 'hidden',
                                 }}
                             >
-                                <img
+                                <Image
                                     src={`/images/${user.level}/bank.png`}
                                     alt="Bank"
                                     className="bank"
@@ -190,21 +192,23 @@ export default function Main() {
                                         cursor: 'pointer',
                                         zIndex: 1,
                                     }}
+                                    width={240}
+                                    height={400}
                                     onClick={handleBankClick}
                                 />
                             </div>
 
                             <div
                                 style={{
-                                    width: `${128 / 1920 * 100}vw`,
-                                    height: `${256 / 1080 * 100}vh`,
+                                    width: `${160 / 1920 * 100}vw`,
+                                    height: `${320 / 1080 * 100}vh`,
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     overflow: 'hidden',
                                 }}
                             >
-                                <img
+                                <Image
                                     src={`/images/${user.level}/house.png`}
                                     className="shop"
                                     alt="Shop"
@@ -215,6 +219,8 @@ export default function Main() {
                                         cursor: 'pointer',
                                         zIndex: 1,
                                     }}
+                                    width={160}
+                                    height={320}
                                     onClick={handleOpenShopModal}
                                 />
                             </div>

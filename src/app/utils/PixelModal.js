@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { buyUpgrade, buyBuildingUpgrade, changeCash, changeLevel } from "../store/index";
 
 const upgradePrices = {
-    more_cash_per_click: [200, 500, 1200],
-    more_cash_per_second: [300, 800, 1600],
+    more_cash_per_click: [100, 1500, 3000],
+    more_cash_per_second: [2000, 3500, 5000],
 };
-const buildingUpgradeBasePrice = 100;
+const buildingUpgradeBasePrice = 1000;
 const buildingUpgradeMultiplier = 1.6;
 function getBuildingUpgradePrice(level) {
     return Math.round(buildingUpgradeBasePrice * Math.pow(buildingUpgradeMultiplier, level - 1));
@@ -18,8 +18,8 @@ const upgradeDisplayNames = {
 };
 const levels = ["first", "second", "third"];
 
-const cashPerClickBonuses = [1, 3, 7];
-const cashPerSecondMultipliers = [2, 3, 5];
+const cashPerClickBonuses = [3, 50, 100];
+const cashPerSecondMultipliers = [1.3, 1.5, 2];
 
 const planetUpgradePrices = [500000, 5000000];
 const planetNames = ["earth", "moon", "mars"];

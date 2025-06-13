@@ -1,54 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { buyBuilding, changeCashPerClick, changeCashPerSecond, changeLevel, changeCash, reset } from '../store/index';
+import {
+    buyBuilding, changeCashPerClick, changeCashPerSecond,
+    changeLevel, changeCash, reset, resetBuildings, resetUpgrades,
+    addMoneyPerSecond, buyUpgrade, buyBuildingUpgrade
+} from '../store/index';
 
 export default function CommandBar() {
     const [isVisible, setIsVisible] = useState(false);
     const [command, setCommand] = useState('');
-
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === '`') {
-                setIsVisible(!isVisible);
-            } else if (event.key === 'Enter') {
-                const [cmd, ...args] = command.trim().split(' ');
-                switch (cmd) {
-                    case 'reset':
-                        dispatch(reset());
-                        break;
-                    case 'cash':
-                        const cash = Number(args[0]);
-                        if (!isNaN(cash)) {
-                            dispatch(changeCash(cash));
-                        } else {
-                            console.log('Invalid amount:', cash);
-                        }
-                        break;
-                    case 'level':
-                        const level = Number(args[0]);
-                        dispatch(changeLevel(level));
-                        break;
-                    case 'buy':
-                        const buildingName = args[0];
-                        dispatch(buyBuilding(buildingName));
-                        break;
-                    case 'cashPerSecond':
-                        const perSecond = args[0];
-                        dispatch(changeCashPerSecond(Number(perSecond)));
-                        break;
-                    case 'cashPerClick':
-                        const perClick = args[0];
-                        dispatch(changeCashPerClick(Number(perClick)));
-                        break;
-                    case 'help':
-                        console.log('Available commands: help, reset, cash <amount>, levelup, buy <buildingName>, cashPerSecond <amount>, cashPerClick <amount>');
-                        break;
-                    default:
-                        console.log('Unknown command (use help command):', command);
-                }
+                setIsVisible((v) => !v);
+            } else if (isVisible && event.key === 'Enter') {
+                handleCommand(command.trim());
                 setCommand('');
             }
         };
@@ -57,21 +26,130 @@ export default function CommandBar() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [command, isVisible]);
+    }, [command, isVisible, dispatch]);
+
+    const handleCommand = (cmdString) => {
+        const [cmd, ...args] = cmdString.split(' ');
+        switch (cmd) {
+            case 'reset':
+                dispatch(reset());
+                break;
+            case 'resetBuildings':
+                dispatch(resetBuildings());
+                break;
+            case 'resetUpgrades':
+                dispatch(resetUpgrades());
+                break;
+            case 'cash':
+                {
+                    const cash = Number(args[0]);
+                    if (!isNaN(cash)) {
+                        dispatch(changeCash(cash));
+                    } else {
+                        console.log('Invalid amount:', args[0]);
+                    }
+                }
+                break;
+            case 'cashPerClick':
+                {
+                    const val = Number(args[0]);
+                    if (!isNaN(val)) {
+                        dispatch(changeCashPerClick(val));
+                    }
+                }
+                break;
+            case 'cashPerSecond':
+                {
+                    const val = Number(args[0]);
+                    if (!isNaN(val)) {
+                        dispatch(changeCashPerSecond(val));
+                    }
+                }
+                break;
+            case 'addMoneyPerSecond':
+                dispatch(addMoneyPerSecond());
+                break;
+            case 'level':
+                {
+                    const lvl = Number(args[0]);
+                    if (!isNaN(lvl)) {
+                        dispatch(changeLevel(lvl));
+                    } else {
+                        console.log('Provide level index (0-earth, 1-moon, 2-mars)');
+                    }
+                }
+                break;
+            case 'buy':
+                {
+                    const buildingName = args[0];
+                    const amount = Number(args[1]);
+                    if (buildingName && !isNaN(amount)) {
+                        dispatch(buyBuilding({ houseName: buildingName, amount }));
+                    } else {
+                        console.log("Usage: buy <buildingName> <amount>");
+                    }
+                }
+                break;
+            case 'buyUpgrade':
+                {
+                    const type = args[0];
+                    const level = args[1];
+                    if (type && level) {
+                        dispatch(buyUpgrade({ type, level }));
+                    } else {
+                        console.log('Usage: buyUpgrade <type> <level>');
+                    }
+                }
+                break;
+            case 'buyBuildingUpgrade':
+                {
+                    const house = args[0];
+                    const nextLevel = Number(args[1]);
+                    if (house && !isNaN(nextLevel)) {
+                        dispatch(buyBuildingUpgrade({ house, nextLevel }));
+                    } else {
+                        console.log('Usage: buyBuildingUpgrade <house> <level>');
+                    }
+                }
+                break;
+            case 'help':
+                console.log(
+                    `Dostępne komendy:
+help                 - pokazuje tą listę
+reset                - resetuje cały postęp
+resetBuildings       - resetuje budynki
+resetUpgrades        - resetuje ulepszenia
+cash <liczba>        - dodaje gotówkę (np. cash 10000)
+cashPerClick <liczba>    - ustawia cashPerClick
+cashPerSecond <liczba>   - ustawia cashPerSecond
+addMoneyPerSecond    - natychmiast dodaje cashPerSecond
+level <idx>          - zmienia poziom (0-ziemia, 1-księżyc, 2-mars)
+buy <budynek> <kwota>    - kupuje budynek (np. buy house_1 1000)
+buyUpgrade <typ> <poziom>      - ulepsza (np. buyUpgrade more_cash_per_click first)
+buyBuildingUpgrade <budynek> <poziom> - ulepsza budynek (np. buyBuildingUpgrade house_1 2)
+`);
+                break;
+            default:
+                if (cmd.length > 0)
+                    console.log('Nieznana komenda (użyj help):', cmdString);
+        }
+    };
 
     if (!isVisible) return null;
 
     return (
         <div style={styles.commandBar}>
-            <button style={styles.closeButton} onClick={() => setIsVisible(!isVisible)}>
+            <button style={styles.closeButton} onClick={() => setIsVisible(false)}>
                 ×
             </button>
             <input
+                autoFocus
                 type="text"
                 placeholder="Write your command here..."
                 style={styles.input}
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
+                onKeyDown={e => e.stopPropagation()}
             />
         </div>
     );
@@ -89,6 +167,7 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         boxShadow: '0 -2px 5px rgba(0,0,0,0.3)',
+        zIndex: 2000,
     },
     closeButton: {
         background: 'none',
