@@ -84,19 +84,22 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
     };
 
     return (
-        <div style={{
-            position: "fixed",
-            zIndex: 1000,
-            left: 0,
-            top: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(30, 40, 60, 0.30)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontFamily: "'Press Start 2P', 'VT323', monospace",
-        }}>
+        <div
+            style={{
+                position: "fixed",
+                zIndex: 1000,
+                left: 0,
+                top: 0,
+                width: "100vw",
+                height: "100vh",
+                background: "rgba(30, 40, 60, 0.30)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontFamily: "'Press Start 2P', 'VT323', monospace",
+            }}
+            onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}
+        >
             <div style={{
                 minWidth: 480,
                 maxWidth: 600,

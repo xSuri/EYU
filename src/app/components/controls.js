@@ -63,15 +63,18 @@ export default function Controls({ open, onClose }) {
     if (!open) return null;
 
     return (
-        <div style={{
-            position: "fixed",
-            left: 0, top: 0, width: "100vw", height: "100vh",
-            background: "rgba(18, 17, 30, 0.72)",
-            zIndex: 999,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-        }}>
+        <div
+            style={{
+                position: "fixed",
+                left: 0, top: 0, width: "100vw", height: "100vh",
+                background: "rgba(18, 17, 30, 0.72)",
+                zIndex: 999,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+            onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}
+        >
             <style>{customScrollStyle}</style>
             <div style={boxStyle} className="controls-modal-scroll">
                 <button onClick={() => onClose(false)} style={closeBtnStyle}>×</button>
