@@ -37,6 +37,7 @@ function BottomMenu() {
                     border: "3px solid #444a32",
                     transition: "box-shadow 0.2s, background 0.18s",
                 }}
+                className="brightness-75 hover:brightness-110 transition"
                 onClick={handleSwitchBottomMenu}
                 title="Show menu"
             >

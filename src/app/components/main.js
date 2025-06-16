@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { addMoneyPerSecond, buyBuilding, click } from '../store/index';
+import { addMoneyPerSecond, buyBuilding, click, loadGame, saveGame } from '../store/index';
 
 import { useState, useEffect, useRef } from 'react';
 import End from './end';
@@ -8,6 +8,7 @@ import PixelModal from '../utils/PixelModal';
 import BackgroundMusic, { ChangeMusicMute } from '../utils/Music';
 import InteractiveButton from '../utils/Interactive-Button';
 import Image from 'next/image';
+import SaveLoadModal from '../utils/Save-Load-Game-Modal';
 
 export default function Main() {
     const timeoutRef = useRef();
@@ -15,6 +16,7 @@ export default function Main() {
     const [muteSounds, setMuteSounds] = useState(false);
     const [gameEnded, setGameEnded] = useState(false);
     const [openShopModal, setOpenShopModal] = useState(false);
+    const [saveLoadModal, setSaveLoadModal] = useState(false);
     const [showGif, setShowGif] = useState(false);
     const [gifOffset, setGifOffset] = useState(0);
 
@@ -25,6 +27,14 @@ export default function Main() {
 
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
+
+    const getBase64 = () => {
+        try {
+            return btoa(unescape(encodeURIComponent(JSON.stringify(user))));
+        } catch {
+            return '';
+        }
+    };
 
     const setSoundStatus = (mute) => {
         setMuteSounds(mute);
@@ -95,6 +105,16 @@ export default function Main() {
                         soundSrc='/sounds/click_button.ogg'
                     />
                 )}
+            </div>
+
+            <div className="fixed bottom-4 left-4 z-[999]">
+                <InteractiveButton
+                    src="/images/utils/save_game.png"
+                    onClick={() => setSaveLoadModal(true)}
+                    styleWidthHeight="w-12 h-12 brightness-75 hover:brightness-110 transition"
+                    sound={true}
+                    soundSrc="/sounds/click_button.ogg"
+                />
             </div>
 
             {gameEnded ? (<End />) : (
@@ -267,7 +287,18 @@ export default function Main() {
                     </>
 
                     <BottomMenu />
+
                     <PixelModal onClose={handleCloseShopModal} open={openShopModal} title="Sklep" gameEnded={gameEnded} setGameEnded={setGameEnded} />
+
+                    <SaveLoadModal
+                        isOpen={saveLoadModal}
+                        onClose={() => setSaveLoadModal(false)}
+                        saveString={getBase64()}
+                        onLoad={base64 => {
+                            dispatch(loadGame(base64));
+                            setSaveLoadModal(false);
+                        }}
+                    />
 
                     {audio.clickedButton && audio.soundSrc && (
                         <audio

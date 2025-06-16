@@ -162,6 +162,37 @@ const userSlice = createSlice({
                 state.cashPerSecond += buildingBasePerSecond;
             }
         },
+        saveGame: (state) => {
+            try {
+                const saveData = JSON.stringify(state);
+                const base64 = btoa(unescape(encodeURIComponent(saveData)));
+                localStorage.setItem('universeGameSave', base64);
+                state.status = 'Game saved!';
+
+                return base64;
+            } catch (e) {
+                state.status = 'Save failed!';
+            }
+        },
+        loadGame: (state, action) => {
+            try {
+                let base64 = action?.payload;
+
+                if (!base64) base64 = localStorage.getItem('universeGameSave');
+                if (base64) {
+                    const json = decodeURIComponent(escape(atob(base64)));
+                    const loaded = JSON.parse(json);
+                    Object.keys(initialState).forEach(key => {
+                        state[key] = loaded[key] !== undefined ? loaded[key] : initialState[key];
+                    });
+                    state.status = "Game loaded!";
+                } else {
+                    state.status = "No save found!";
+                }
+            } catch (e) {
+                state.status = "Load failed!";
+            }
+        },
     },
 });
 
@@ -170,7 +201,7 @@ export const {
     buyBuilding, changeCashPerClick,
     changeCash, changeCashPerSecond, changeCashPerSecondMultiplier, changeLevel,
     addMoneyPerSecond, click,
-    buyUpgrade, buyBuildingUpgrade
+    buyUpgrade, buyBuildingUpgrade, saveGame, loadGame
 } = userSlice.actions;
 
 const store = configureStore({
