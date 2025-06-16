@@ -141,10 +141,10 @@ const userSlice = createSlice({
                 )
             ) {
                 state.upgrades[type][level] = true;
-                if (type === "more_cash_per_click") {
+                if (type === 'more_cash_per_click') {
                     if (idx !== -1) state.cashPerClick += cashPerClickBonuses[idx];
                 }
-                else if (type === "more_cash_per_second") {
+                else if (type === 'more_cash_per_second') {
                     if (idx !== -1) state.cashPerSecondMultiplier = cashPerSecondMultipliers[idx];
                 }
             }

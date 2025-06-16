@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { buyUpgrade, buyBuildingUpgrade, changeCash, changeLevel } from "../store/index";
+import { useState, useRef, Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { buyUpgrade, buyBuildingUpgrade, changeCash, changeLevel } from '../store/index';
 
 const upgradePrices = {
     more_cash_per_click: [100, 1500, 3000],
@@ -13,17 +13,17 @@ function getBuildingUpgradePrice(level) {
 }
 
 const upgradeDisplayNames = {
-    more_cash_per_click: "Cash per click",
-    more_cash_per_second: "Cash per second multiplier",
+    more_cash_per_click: 'Cash per click',
+    more_cash_per_second: 'Cash per second multiplier',
 };
-const levels = ["first", "second", "third"];
+const levels = ['first', 'second', 'third'];
 
 const cashPerClickBonuses = [3, 50, 100];
 const cashPerSecondMultipliers = [1.3, 1.5, 2];
 
 const planetUpgradePrices = [500000, 5000000];
-const planetNames = ["earth", "moon", "mars"];
-const planetDisplayNames = ["Earth", "Moon", "Mars"];
+const planetNames = ['earth', 'moon', 'mars'];
+const planetDisplayNames = ['Earth', 'Moon', 'Mars'];
 
 export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnded }) {
     const audioRef = useRef();
@@ -47,7 +47,7 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
     const nextPlanetPrice = planetUpgradePrices[levelNumber] || null;
     const nextPlanetDisplay = planetDisplayNames[nextLevelNumber];
 
-    const isOnMars = planetNames[levelNumber] === "mars";
+    const isOnMars = planetNames[levelNumber] === 'mars';
     const endGamePrice = 10_000_000;
     const canEndGame = cash >= endGamePrice;
 
@@ -188,10 +188,10 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                                     const prevBought = idx === 0 ? true : upgrades[key][levels[idx - 1]];
                                     const canBuy = !bought && prevBought && cash >= price;
 
-                                    let levelLabel = "";
-                                    if (key === "more_cash_per_click") {
+                                    let levelLabel = '';
+                                    if (key === 'more_cash_per_click') {
                                         levelLabel = `+${cashPerClickBonuses[idx]}`;
-                                    } else if (key === "more_cash_per_second") {
+                                    } else if (key === 'more_cash_per_second') {
                                         levelLabel = `x${cashPerSecondMultipliers[idx]}`;
                                     }
                                     return (
@@ -315,7 +315,7 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                                             outline: "none"
                                         }}
                                     >
-                                        {house.replace("_", " ").toUpperCase()}
+                                        {house.replace('_', ' ').toUpperCase()}
                                         <br />
                                         <span style={{
                                             fontSize: 11,
@@ -335,7 +335,7 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                                         letterSpacing: 1,
                                         border: "1px solid #bdbdbd"
                                     }}>
-                                        {!isBought ? "Buy building" : isMax ? "MAX" : `${price}$`}
+                                        {!isBought ? 'Buy building' : isMax ? 'MAX' : `${price}$`}
                                     </span>
                                 </div>
                             );
@@ -352,7 +352,7 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                     width: "100%"
                 }}>
                     {!gameEnded && !isOnMars && (
-                        <React.Fragment>
+                        <Fragment>
                             <button
                                 disabled={cash < nextPlanetPrice}
                                 onClick={() => handleBuyNextPlanet(nextPlanetPrice)}
@@ -381,10 +381,10 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                             }}>
                                 {nextPlanetPrice}$ required
                             </span>
-                        </React.Fragment>
+                        </Fragment>
                     )}
                     {!gameEnded && isOnMars && (
-                        <React.Fragment>
+                        <Fragment>
                             <button
                                 disabled={!canEndGame}
                                 onClick={() => {
@@ -416,7 +416,7 @@ export default function PixelUpgradeModal({ open, onClose, gameEnded, setGameEnd
                             }}>
                                 {endGamePrice}$ required
                             </span>
-                        </React.Fragment>
+                        </Fragment>
                     )}
                 </div>
             </div>

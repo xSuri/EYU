@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { addMoneyPerSecond, buyBuilding, click } from '../store/index';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import End from './end';
 import BottomMenu from '../utils/BottomMenu';
 import PixelModal from '../utils/PixelModal';
@@ -10,9 +10,13 @@ import InteractiveButton from '../utils/Interactive-Button';
 import Image from 'next/image';
 
 export default function Main() {
+    const timeoutRef = useRef();
+
     const [muteSounds, setMuteSounds] = useState(false);
     const [gameEnded, setGameEnded] = useState(false);
     const [openShopModal, setOpenShopModal] = useState(false);
+    const [showGif, setShowGif] = useState(false);
+    const [gifOffset, setGifOffset] = useState(0);
 
     const [audio, setAudio] = useState({
         soundSrc: '',
@@ -45,6 +49,23 @@ export default function Main() {
     const handleBankClick = () => {
         dispatch(click());
         setAudio({ soundSrc: '/sounds/get_money.wav', clickedButton: true });
+    };
+
+
+    const onBankClick = (e) => {
+        handleBankClick(e);
+
+        setGifOffset(Math.floor(Math.random() * 60) - 30);
+        setShowGif(true);
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            setShowGif(false);
+            timeoutRef.current = null;
+        }, 1500);
     };
 
     const houses = user.bought.buildings;
@@ -179,6 +200,7 @@ export default function Main() {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     overflow: 'hidden',
+                                    position: 'relative',
                                 }}
                             >
                                 <Image
@@ -194,8 +216,25 @@ export default function Main() {
                                     }}
                                     width={240}
                                     height={400}
-                                    onClick={handleBankClick}
+                                    onClick={onBankClick}
                                 />
+                                {showGif && (
+                                    <img
+                                        src="/images/utils/dolar.gif"
+                                        alt="Dolar animation"
+                                        style={{
+                                            position: 'absolute',
+                                            left: `calc(50% + ${gifOffset}px)`,
+                                            top: '10%',
+                                            transform: 'translate(-50%, -100%)',
+                                            width: 40,
+                                            height: 40,
+                                            pointerEvents: 'none',
+                                            zIndex: 2,
+                                            filter: 'drop-shadow(0 2px 6px #0008)'
+                                        }}
+                                    />
+                                )}
                             </div>
 
                             <div

@@ -2,8 +2,8 @@ import './globals.css';
 import FullScreenButton from './utils/FullScreen-Button';
 
 export const metadata = {
-  title: "EYU",
-  description: "Expand Your Universe",
+  title: 'EYU',
+  description: 'Expand Your Universe',
 };
 
 export default function RootLayout({ children }) {

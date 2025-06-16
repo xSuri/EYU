@@ -82,7 +82,7 @@ export default function CommandBar() {
                     if (buildingName && !isNaN(amount)) {
                         dispatch(buyBuilding({ houseName: buildingName, amount }));
                     } else {
-                        console.log("Usage: buy <buildingName> <amount>");
+                        console.log('Usage: buy <buildingName> <amount>');
                     }
                 }
                 break;
