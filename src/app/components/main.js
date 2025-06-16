@@ -209,7 +209,7 @@ export default function Main() {
                                 }}
                             >
                                 <Image
-                                    src={`/images/${user.level}/house.png`}
+                                    src={`/images/${user.level}/market.png`}
                                     className="shop"
                                     alt="Shop"
                                     style={{

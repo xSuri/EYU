@@ -16,9 +16,6 @@ export default function CommandBar() {
         const handleKeyDown = (event) => {
             if (event.key === '`') {
                 setIsVisible((v) => !v);
-            } else if (isVisible && event.key === 'Enter') {
-                handleCommand(command.trim());
-                setCommand('');
             }
         };
 
@@ -26,7 +23,7 @@ export default function CommandBar() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [command, isVisible, dispatch]);
+    }, []);
 
     const handleCommand = (cmdString) => {
         const [cmd, ...args] = cmdString.split(' ');
@@ -149,7 +146,13 @@ buyBuildingUpgrade <budynek> <poziom> - ulepsza budynek (np. buyBuildingUpgrade 
                 style={styles.input}
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
-                onKeyDown={e => e.stopPropagation()}
+                onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                        handleCommand(command.trim());
+                        setCommand('');
+                        e.preventDefault();
+                    }
+                }}
             />
         </div>
     );

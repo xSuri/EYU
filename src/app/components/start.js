@@ -6,6 +6,7 @@ import BackgroundMusic, { ChangeMusicMute } from '../utils/Music';
 import MusicPermission from '../utils/Music-Perm-Modal';
 import { usePermission } from '../PermissionContext';
 import Credit from './credit';
+import Controls from './controls';
 
 export default function StartScreen({ onStart }) {
     const [muteSounds, setMuteSounds] = useState(false);
@@ -13,6 +14,7 @@ export default function StartScreen({ onStart }) {
 
     const [showStart, setShowStart] = useState(true);
     const [showCredit, setShowCredit] = useState(false);
+    const [showControls, setShowControls] = useState(false);
 
     const [audio, setAudio] = useState({
         soundSrc: '',
@@ -31,6 +33,16 @@ export default function StartScreen({ onStart }) {
 
     const handleHideCredit = () => {
         setShowCredit(false);
+        setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
+    };
+
+    const handleShowControls = () => {
+        setShowControls(true);
+        setShowStart(true);
+    };
+
+    const handleHideControls = () => {
+        setShowControls(false);
         setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
     };
 
@@ -66,38 +78,60 @@ export default function StartScreen({ onStart }) {
                             {
                                 showCredit ? (<Credit open={showCredit} onClose={handleHideCredit} />) : (
                                     showStart ? (
-                                        <div className="flex flex-col gap-4 items-center" >
-                                            <div className="relative">
-                                                <InteractiveButton src="/images/utils/button_start.png" sound={true} soundSrc='/sounds/click_button.ogg' onClick={handleStart} />
+                                        showControls ? (<Controls open={showControls} onClose={handleHideControls} />) : (
+                                            <div className="flex flex-col gap-4 items-center" >
+                                                <div className="relative">
+                                                    <InteractiveButton src="/images/utils/button_start.png" sound={true} soundSrc='/sounds/click_button.ogg' onClick={handleStart} />
 
-                                                <div className="absolute top-0 right-[-3rem]">
-                                                    {muteSounds ? (
-                                                        <InteractiveButton
-                                                            src="/images/utils/button_off.png"
-                                                            onClick={() => setSoundStatus(false)}
-                                                            styleWidthHeight="w-12 h-12"
-                                                            sound={true}
-                                                            soundSrc='/sounds/click_button.ogg'
-                                                        />
-                                                    ) : (
-                                                        <InteractiveButton
-                                                            src="/images/utils/button_on.png"
-                                                            onClick={() => setSoundStatus(true)}
-                                                            styleWidthHeight="w-12 h-12"
-                                                            sound={true}
-                                                            soundSrc='/sounds/click_button.ogg'
-                                                        />
-                                                    )}
+                                                    <div className="absolute top-0 right-[-3rem]">
+                                                        {muteSounds ? (
+                                                            <InteractiveButton
+                                                                src="/images/utils/button_off.png"
+                                                                onClick={() => setSoundStatus(false)}
+                                                                styleWidthHeight="w-12 h-12"
+                                                                sound={true}
+                                                                soundSrc='/sounds/click_button.ogg'
+                                                            />
+                                                        ) : (
+                                                            <InteractiveButton
+                                                                src="/images/utils/button_on.png"
+                                                                onClick={() => setSoundStatus(true)}
+                                                                styleWidthHeight="w-12 h-12"
+                                                                sound={true}
+                                                                soundSrc='/sounds/click_button.ogg'
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <InteractiveButton
+                                                    src="/images/utils/button_credit.png"
+                                                    onClick={handleShowCredit}
+                                                    sound={true}
+                                                    soundSrc='/sounds/click_button.ogg'
+                                                />
+
+                                                <div
+                                                    className="fixed top-4 left-4 z-[1000]"
+                                                    style={{
+                                                        width: "1.5vw",
+                                                        height: "1.5vw",
+                                                        maxWidth: "1.5vh",
+                                                        maxHeight: "1.5vh",
+                                                        minWidth: "38px",
+                                                        minHeight: "38px"
+                                                    }}
+                                                >
+                                                    <InteractiveButton
+                                                        styleWidthHeight="w-full h-full filter invert"
+                                                        src="/images/utils/controls.png"
+                                                        onClick={handleShowControls}
+                                                        sound={true}
+                                                        soundSrc='/sounds/click_button.ogg'
+                                                    />
                                                 </div>
                                             </div>
-
-                                            <InteractiveButton
-                                                src="/images/utils/button_credit.png"
-                                                onClick={handleShowCredit}
-                                                sound={true}
-                                                soundSrc='/sounds/click_button.ogg'
-                                            />
-                                        </div>
+                                        )
                                     ) :
                                         showCredit ? null : ((
                                             <p className="mt-10 text-gray-300 animate-pulse text-lg flex flex-col items-center gap-2">
