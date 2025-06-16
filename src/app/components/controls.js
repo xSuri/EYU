@@ -46,7 +46,6 @@ const closeBtnStyle = {
     lineHeight: "44px"
 };
 
-// Custom scroll styling for webkit browsers
 const customScrollStyle = `
   .controls-modal-scroll::-webkit-scrollbar {
     width: 14px;

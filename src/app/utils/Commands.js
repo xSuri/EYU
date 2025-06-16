@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
     buyBuilding, changeCashPerClick, changeCashPerSecond,
     changeLevel, changeCash, reset, resetBuildings, resetUpgrades,
@@ -9,7 +9,6 @@ import {
 export default function CommandBar() {
     const [isVisible, setIsVisible] = useState(false);
     const [command, setCommand] = useState('');
-    const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     useEffect(() => {
