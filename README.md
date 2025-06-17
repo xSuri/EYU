@@ -11,7 +11,7 @@ To do this, simply download the project archive named `equ.zip`, extract it, and
 3. **Serve Locally**:  
    - Make sure you have a static file server installed (for example, [http-server](https://www.npmjs.com/package/http-server) for Node.js or Python’s built-in HTTP server).
    - Open a terminal in the extracted folder.
-   - Run your chosen server (e.g., `npx http-server .` or `python -m http.server` or `npm run dev`).
+   - Run your chosen server (e.g., `npx http-server .`, `python -m http.server` or `npm run dev`).
    - Open your browser and go to `http://localhost:3000` (or the port your server indicates).
 4. **Play!** The game should now be available in your browser.
 
