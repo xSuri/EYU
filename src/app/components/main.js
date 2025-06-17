@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { addMoneyPerSecond, buyBuilding, click, loadGame, saveGame } from '../store/index';
+import { planetBuildingPrices } from '../store/buildingPrices';
 
 import { useState, useEffect, useRef } from 'react';
 import End from './end';
@@ -39,28 +40,37 @@ export default function Main() {
     const setSoundStatus = (mute) => {
         setMuteSounds(mute);
         ChangeMusicMute();
-    }
+    };
 
-    const handleHouseClick = (houseName, amount) => {
-        dispatch(buyBuilding({ houseName, amount }));
-        if (user.cash >= amount) setAudio({ soundSrc: '/sounds/buy_building.wav', clickedButton: true });
+    const getHousePrice = (house) => {
+        const lvl = user.upgrades.building_upgrades[house]?.level || 1;
+        const prices = planetBuildingPrices[user.level]?.[house];
+
+        if (user.bought.buildings[house]) return 0;
+        if (!prices) return 0;
+        return prices[lvl - 1] || 0;
+    };
+
+    const handleHouseClick = (house) => {
+        const price = getHousePrice(house);
+        dispatch(buyBuilding({ houseName: house, amount: price }));
+        if (user.cash >= price && price > 0) setAudio({ soundSrc: '/sounds/buy_building.wav', clickedButton: true });
     };
 
     const handleOpenShopModal = () => {
         setOpenShopModal(true);
         setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
-    }
+    };
 
     const handleCloseShopModal = () => {
         setOpenShopModal(false);
         setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
-    }
+    };
 
     const handleBankClick = () => {
         dispatch(click());
         setAudio({ soundSrc: '/sounds/get_money.wav', clickedButton: true });
     };
-
 
     const onBankClick = (e) => {
         handleBankClick(e);
@@ -175,7 +185,7 @@ export default function Main() {
                                                 pointerEvents: 'none',
                                             }}
                                         >
-                                            {`${((index + 1) * 400) * 2.5}$`}
+                                            {`${getHousePrice(house)}$`}
                                         </span>
                                     )
                                 }
@@ -193,7 +203,7 @@ export default function Main() {
                                     }}
                                     width={144}
                                     height={288}
-                                    onClick={() => houses[house] ? null : handleHouseClick(house, ((index + 1) * 400) * 2.5)}
+                                    onClick={() => houses[house] ? null : handleHouseClick(house)}
                                 />
                             </div>
                         ))
@@ -300,16 +310,16 @@ export default function Main() {
                         }}
                     />
 
-                    {audio.clickedButton && audio.soundSrc && (
+                    {!muteSounds && audio.clickedButton && audio.soundSrc && (
                         <audio
                             src={audio.soundSrc}
                             autoPlay
-                            volume={1}
+                            volume={0.15}
                             onEnded={() => setAudio({ soundSrc: '', clickedButton: false })}
                         />
                     )}
 
-                    <BackgroundMusic src="/sounds/main_playing_music.wav" volume={0.02} />
+                    <BackgroundMusic src="/sounds/main_playing_music.wav" volume={0.05} />
                 </div>
 
             )}
