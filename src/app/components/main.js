@@ -1,22 +1,91 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { addMoneyPerSecond, buyBuilding, click } from '../store/index';
+import { addMoneyPerSecond, buyBuilding, click, loadGame, saveGame } from '../store/index';
+import { planetBuildingPrices } from '../store/buildingPrices';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import End from './end';
 import BottomMenu from '../utils/BottomMenu';
 import PixelModal from '../utils/PixelModal';
+import BackgroundMusic, { ChangeMusicMute } from '../utils/Music';
+import InteractiveButton from '../utils/Interactive-Button';
+import Image from 'next/image';
+import SaveLoadModal from '../utils/Save-Load-Game-Modal';
 
 export default function Main() {
-    const [gameEnded, setGameEnded] = useState(true);
-    const [openShopModal, setOpenShopModal] = useState(false);
+    const timeoutRef = useRef();
 
-    const closeShopModal = () => setOpenShopModal(false);
+    const [muteSounds, setMuteSounds] = useState(false);
+    const [gameEnded, setGameEnded] = useState(false);
+    const [openShopModal, setOpenShopModal] = useState(false);
+    const [saveLoadModal, setSaveLoadModal] = useState(false);
+    const [showGif, setShowGif] = useState(false);
+    const [gifOffset, setGifOffset] = useState(0);
+
+    const [audio, setAudio] = useState({
+        soundSrc: '',
+        clickedButton: false,
+    });
 
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
-    const handleHouseClick = (houseName, amount) => {
-        dispatch(buyBuilding({ houseName, amount }));
+    const getBase64 = () => {
+        try {
+            return btoa(unescape(encodeURIComponent(JSON.stringify(user))));
+        } catch {
+            return '';
+        }
+    };
+
+    const setSoundStatus = (mute) => {
+        setMuteSounds(mute);
+        ChangeMusicMute();
+    };
+
+    const getHousePrice = (house) => {
+        const lvl = user.upgrades.building_upgrades[house]?.level || 1;
+        const prices = planetBuildingPrices[user.level]?.[house];
+
+        if (user.bought.buildings[house]) return 0;
+        if (!prices) return 0;
+        return prices[lvl - 1] || 0;
+    };
+
+    const handleHouseClick = (house) => {
+        const price = getHousePrice(house);
+        dispatch(buyBuilding({ houseName: house, amount: price }));
+        if (user.cash >= price && price > 0) setAudio({ soundSrc: '/sounds/buy_building.wav', clickedButton: true });
+    };
+
+    const handleOpenShopModal = () => {
+        setOpenShopModal(true);
+        setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
+    };
+
+    const handleCloseShopModal = () => {
+        setOpenShopModal(false);
+        setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
+    };
+
+    const handleBankClick = () => {
+        dispatch(click());
+        setAudio({ soundSrc: '/sounds/get_money.wav', clickedButton: true });
+    };
+
+    const onBankClick = (e) => {
+        handleBankClick(e);
+
+        setGifOffset(Math.floor(Math.random() * 60) - 30);
+        setShowGif(true);
+
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+            setShowGif(false);
+            timeoutRef.current = null;
+        }, 1500);
     };
 
     const houses = user.bought.buildings;
@@ -24,10 +93,40 @@ export default function Main() {
     useEffect(() => {
         const moneyPerSec = setInterval(() => dispatch(addMoneyPerSecond()), 1000);
         return () => clearInterval(moneyPerSec);
-    }, [user.cashPerSecond]);
+    }, [user.cashPerSecond, dispatch]);
 
     return (
         <>
+            <div className="fixed top-4 left-4 z-[999]">
+                {muteSounds ? (
+                    <InteractiveButton
+                        src="/images/utils/button_off.png"
+                        onClick={() => setSoundStatus(false)}
+                        styleWidthHeight="w-12 h-12"
+                        sound={true}
+                        soundSrc='/sounds/click_button.ogg'
+                    />
+                ) : (
+                    <InteractiveButton
+                        src="/images/utils/button_on.png"
+                        onClick={() => setSoundStatus(true)}
+                        styleWidthHeight="w-12 h-12"
+                        sound={true}
+                        soundSrc='/sounds/click_button.ogg'
+                    />
+                )}
+            </div>
+
+            <div className="fixed bottom-4 left-4 z-[999]">
+                <InteractiveButton
+                    src="/images/utils/save_game.png"
+                    onClick={() => setSaveLoadModal(true)}
+                    styleWidthHeight="w-12 h-12 brightness-75 hover:brightness-110 transition"
+                    sound={true}
+                    soundSrc="/sounds/click_button.ogg"
+                />
+            </div>
+
             {gameEnded ? (<End />) : (
 
                 <div
@@ -50,7 +149,7 @@ export default function Main() {
                             backgroundPosition: 'center',
                             backgroundRepeat: 'no-repeat',
                         }}
-                    ></div>
+                    />
 
                     {
                         Object.keys(houses).map((house, index) => (
@@ -64,8 +163,8 @@ export default function Main() {
                                         : (Math.floor((index - 6) / 2) * 700 + ((index % 2 === 0) ? 150 : 350) + (index >= 8 ? 700 : 0)) - 50
                                     ) / 1920 * 100
                                         }%`,
-                                    width: `${128 / 1920 * 100}%`,
-                                    height: `${256 / 1080 * 100}%`,
+                                    width: `${144 / 1920 * 100}%`,
+                                    height: `${288 / 1080 * 100}%`,
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
@@ -86,11 +185,11 @@ export default function Main() {
                                                 pointerEvents: 'none',
                                             }}
                                         >
-                                            {`${(index + 1) * 200}$`}
+                                            {`${getHousePrice(house)}$`}
                                         </span>
                                     )
                                 }
-                                <img
+                                <Image
                                     src={`/images/${user.level}/domeklvl${user.upgrades.building_upgrades[house].level}.png`}
                                     alt={'House ' + (index + 1)}
                                     className={houses[house] ? '' : 'inactive-house'}
@@ -102,7 +201,9 @@ export default function Main() {
                                         zIndex: 1,
                                         filter: houses[house] ? 'brightness(1)' : 'brightness(0.4)',
                                     }}
-                                    onClick={() => houses[house] ? null : handleHouseClick(house, (index + 1) * 200)}
+                                    width={144}
+                                    height={288}
+                                    onClick={() => houses[house] ? null : handleHouseClick(house)}
                                 />
                             </div>
                         ))
@@ -123,15 +224,16 @@ export default function Main() {
                         >
                             <div
                                 style={{
-                                    width: `${192 / 1920 * 100}vw`,
-                                    height: `${320 / 1080 * 100}vh`,
+                                    width: `${240 / 1920 * 100}vw`,
+                                    height: `${400 / 1080 * 100}vh`,
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     overflow: 'hidden',
+                                    position: 'relative',
                                 }}
                             >
-                                <img
+                                <Image
                                     src={`/images/${user.level}/bank.png`}
                                     alt="Bank"
                                     className="bank"
@@ -142,22 +244,41 @@ export default function Main() {
                                         cursor: 'pointer',
                                         zIndex: 1,
                                     }}
-                                    onClick={() => dispatch(click())}
+                                    width={240}
+                                    height={400}
+                                    onClick={onBankClick}
                                 />
+                                {showGif && (
+                                    <img
+                                        src="/images/utils/dolar.gif"
+                                        alt="Dolar animation"
+                                        style={{
+                                            position: 'absolute',
+                                            left: `calc(50% + ${gifOffset}px)`,
+                                            top: '10%',
+                                            transform: 'translate(-50%, -100%)',
+                                            width: 40,
+                                            height: 40,
+                                            pointerEvents: 'none',
+                                            zIndex: 2,
+                                            filter: 'drop-shadow(0 2px 6px #0008)'
+                                        }}
+                                    />
+                                )}
                             </div>
 
                             <div
                                 style={{
-                                    width: `${128 / 1920 * 100}vw`,
-                                    height: `${256 / 1080 * 100}vh`,
+                                    width: `${160 / 1920 * 100}vw`,
+                                    height: `${320 / 1080 * 100}vh`,
                                     display: 'flex',
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     overflow: 'hidden',
                                 }}
                             >
-                                <img
-                                    src={`/images/${user.level}/house.png`}
+                                <Image
+                                    src={`/images/${user.level}/market.png`}
                                     className="shop"
                                     alt="Shop"
                                     style={{
@@ -167,15 +288,38 @@ export default function Main() {
                                         cursor: 'pointer',
                                         zIndex: 1,
                                     }}
-                                    onClick={() => setOpenShopModal(true)}
+                                    width={160}
+                                    height={320}
+                                    onClick={handleOpenShopModal}
                                 />
                             </div>
                         </div>
                     </>
 
                     <BottomMenu />
-                    <PixelModal onClose={() => closeShopModal()} open={openShopModal} title="Sklep" >
-                    </PixelModal>
+
+                    <PixelModal onClose={handleCloseShopModal} open={openShopModal} title="Sklep" gameEnded={gameEnded} setGameEnded={setGameEnded} />
+
+                    <SaveLoadModal
+                        isOpen={saveLoadModal}
+                        onClose={() => setSaveLoadModal(false)}
+                        saveString={getBase64()}
+                        onLoad={base64 => {
+                            dispatch(loadGame(base64));
+                            setSaveLoadModal(false);
+                        }}
+                    />
+
+                    {!muteSounds && audio.clickedButton && audio.soundSrc && (
+                        <audio
+                            src={audio.soundSrc}
+                            autoPlay
+                            volume={0.15}
+                            onEnded={() => setAudio({ soundSrc: '', clickedButton: false })}
+                        />
+                    )}
+
+                    <BackgroundMusic src="/sounds/main_playing_music.wav" volume={0.05} />
                 </div>
 
             )}

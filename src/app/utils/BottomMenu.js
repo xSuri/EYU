@@ -1,10 +1,20 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 function BottomMenu() {
     const [open, setOpen] = useState(false);
 
+    const [audio, setAudio] = useState({
+        soundSrc: '',
+        clickedButton: false,
+    });
+
     const user = useSelector((state) => state.user);
+
+    const handleSwitchBottomMenu = () => {
+        setOpen(prevOpen => !prevOpen);
+        setAudio({ soundSrc: '/sounds/click_button.ogg', clickedButton: true });
+    }
 
     return (
         <div>
@@ -27,7 +37,8 @@ function BottomMenu() {
                     border: "3px solid #444a32",
                     transition: "box-shadow 0.2s, background 0.18s",
                 }}
-                onClick={() => setOpen((o) => !o)}
+                className="brightness-75 hover:brightness-110 transition"
+                onClick={handleSwitchBottomMenu}
                 title="Show menu"
             >
                 <span style={{
@@ -67,12 +78,12 @@ function BottomMenu() {
                         letterSpacing: 1,
                         textShadow: "0 2px 0 #bdbdbd80",
                     }}>
-                        Cash: <span style={{color: "#222"}}>{user.cash}</span>
+                        Cash: <span style={{ color: "#222" }}>{user.cash}</span>
                     </div>
-                    <div style={{ marginBottom: 2 }}>Planet: <span style={{fontWeight: "bold"}}>{user.level}</span></div>
-                    <div style={{ marginBottom: 2 }}>Cash per click: <span style={{fontWeight: "bold"}}>{user.cashPerClick}</span></div>
-                    <div style={{ marginBottom: 2 }}>Cash per second: <span style={{fontWeight: "bold"}}>{user.cashPerSecond}</span></div>
-                    <div>Cash/sec Multiplier: <span style={{fontWeight: "bold"}}>x{user.cashPerSecondMultiplier}</span></div>
+                    <div style={{ marginBottom: 2 }}>Planet: <span style={{ fontWeight: "bold" }}>{user.level}</span></div>
+                    <div style={{ marginBottom: 2 }}>Cash per click: <span style={{ fontWeight: "bold" }}>{user.cashPerClick}</span></div>
+                    <div style={{ marginBottom: 2 }}>Cash per second: <span style={{ fontWeight: "bold" }}>{user.cashPerSecond}</span></div>
+                    <div>Cash/sec Multiplier: <span style={{ fontWeight: "bold" }}>x{user.cashPerSecondMultiplier}</span></div>
                 </div>
             )}
 
@@ -84,6 +95,15 @@ function BottomMenu() {
         }
         `}
             </style>
+
+            {audio.clickedButton && audio.soundSrc && (
+                <audio
+                    src={audio.soundSrc}
+                    autoPlay
+                    volume={1}
+                    onEnded={() => setAudio({ soundSrc: '', clickedButton: false })}
+                />
+            )}
         </div>
     );
 }

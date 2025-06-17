@@ -46,30 +46,33 @@ export default function Credit({ open, onClose }) {
   if (!open) return null;
 
   return (
-    <div style={{
-      position: "fixed",
-      left: 0, top: 0, width: "100vw", height: "100vh",
-      background: "rgba(18, 17, 30, 0.72)",
-      zIndex: 999,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    }}>
+    <div
+      style={{
+        position: "fixed",
+        left: 0, top: 0, width: "100vw", height: "100vh",
+        background: "rgba(18, 17, 30, 0.72)",
+        zIndex: 999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      onMouseDown={e => { if (e.target === e.currentTarget) onClose(); }}
+    >
       <div style={boxStyle}>
         <button onClick={() => onClose(false)} style={closeBtnStyle}>×</button>
         <div style={labelStyle}>CREDITS</div>
         <div style={{ marginBottom: 22 }}>
           <span style={{ color: "#e9e968" }}>Project Management</span><br />
-          Hubert 'xsuri' Kucharzak
+          Hubert &apos;xsuri&apos; Kucharzak
           <br />
         </div>
         <div style={{ marginBottom: 22 }}>
           <span style={{ color: "#e9e968" }}>Programming</span><br />
-          Hubert 'xsuri' Kucharzak
+          Hubert &apos;xsuri&apos; Kucharzak
         </div>
         <div style={{ marginBottom: 22 }}>
           <span style={{ color: "#e9e968" }}>Game Design</span><br />
-          Hubert 'xsuri' Kucharzak
+          Hubert &apos;xsuri&apos; Kucharzak
           <br />
           Dawid Potykanowicz
           <br />

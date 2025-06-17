@@ -54,25 +54,6 @@ export default function End({ }) {
           Your legacy will live among the stars.<br />
           <span style={{ color: "#a5b8d1" }}>Thank you for playing!</span>
         </div>
-        {/* <button
-          onClick={}
-          style={{
-            fontFamily: "'Press Start 2P', 'VT323', monospace",
-            background: "#444a32",
-            color: "#fff",
-            fontSize: 19,
-            border: "2px solid #ce254b",
-            borderRadius: 9,
-            padding: "14px 40px",
-            marginTop: 8,
-            letterSpacing: 2,
-            cursor: "pointer",
-            boxShadow: "0 2px 0 #21091e",
-            transition: "background 0.18s"
-          }}
-        >
-          Play Again
-        </button> */}
         <div style={{
           fontSize: 13,
           color: "#bdbdbd",

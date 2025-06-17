@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { usePermission } from '../PermissionContext';
 
 export default function MusicPermission() {

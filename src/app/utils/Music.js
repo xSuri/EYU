@@ -3,7 +3,7 @@ import { usePermission } from '../PermissionContext';
 
 let audio;
 
-export default function BackgroundMusic({ src }) {
+export default function BackgroundMusic({ src, timeout, volume = 0.1 }) {
     const audioRef = useRef(null);
     const { perms } = usePermission();
 
@@ -11,12 +11,18 @@ export default function BackgroundMusic({ src }) {
         audio = audioRef;
 
         if(perms){
-            setTimeout(() => audioRef.current.play(), 500);
+            setTimeout(() => audioRef.current.play(), timeout || 500);
         };
-    }, [perms]);
+    }, [perms, timeout]);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume;
+        }
+    }, [volume]);
 
     return (
-        <audio ref={audioRef} loop>
+        <audio ref={audioRef}  loop>
             <source src={src} type="audio/mpeg" />
         </audio>
     );
