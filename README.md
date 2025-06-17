@@ -19,6 +19,6 @@ To do this, simply download the project archive named `equ.zip`, extract it, and
 - A modern web browser (Chrome, Firefox, Edge, Safari)
 - (For local play) Node.js or Python, if using those servers
 
-For more details or troubleshooting, check out the [README on GitHub](https://github.com/your-repo-link).
+For more details or troubleshooting, check out the [README on GitHub](https://github.com/xSuri/EYU).
 
 Enjoy the game!
