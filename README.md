@@ -1,4 +1,4 @@
-You can play the game directly in your browser on our [website](https://xsuri.servehttp.com/rest/).  
+You can play the game directly in your browser on our [website](https://xsuri.svjp.pl/rest/).  
 If you’re interested in how it works, you can also view the full source code on our GitHub repository.
 
 Alternatively, you can run the game locally on your machine using libraries that serve games on localhost.  
